@@ -1,0 +1,263 @@
+{
+  "nav": {
+    "home": "Home",
+    "gallery": "Gallery",
+    "lookbook": "Lookbook",
+    "blog": "Journal",
+    "book": "Book an appointment",
+    "tagline": "Bridal Atelier · Est. YYYY"
+  },
+  "hero": {
+    "tagline": "YourBusiness",
+    "line1": "The art of",
+    "script": "adornment",
+    "sub": "Intricate bridal and occasion artistry — worn like fine jewellery, booked with a quiet, considered ease.",
+    "est": "Bridal & Occasion · Est. YYYY",
+    "cta_book": "Book an appointment",
+    "cta_gallery": "Explore designs",
+    "scroll": "Scroll"
+  },
+  "about": {
+    "eyebrow": "Our story",
+    "heading": "Devotion in every stroke",
+    "quote": "We don't just apply henna — we tell your story through it.",
+    "description": "YourBusiness is a premier henna and body art studio. With over 500 clients served and years of artistry, we bring your most special moments to life.",
+    "stat1": "Est. YYYY",
+    "stat2": "500+",
+    "stat2_label": "Hands adorned",
+    "stat3": "100%",
+    "stat3_label": "Organic ingredients"
+  },
+  "ingredients": {
+    "tagline": "Every cone, made by hand.",
+    "sub": "Four ingredients. One ancient tradition.",
+    "henna": "Henna Leaves",
+    "oil": "Essential Oils",
+    "sugar": "Cane Sugar",
+    "water": "Water",
+    "outro": "Crafted with care. Applied with love.",
+    "cta": "Book Your Session"
+  },
+  "services": {
+    "eyebrow": "Signature work",
+    "title": "Designed for the occasion",
+    "complimentary": "Henna cones — always complimentary",
+    "book_cta": "Book this service",
+    "per_side": "per side",
+    "items": {
+      "intricate_indian_bride": {
+        "name": "Intricate Indian Bride",
+        "description": "A traditionally detailed design with the most intricate patterns, filling your hands completely."
+      },
+      "floral_arabic_bride": {
+        "name": "Floral Arabic Bride",
+        "description": "A floral themed design with a mix of bold and petite flowers & motifs."
+      },
+      "minimalistic_bride": {
+        "name": "Minimalistic Bride",
+        "description": "A trendsetting & clean portrayal. Perfect for the simple, modern bride."
+      },
+      "party_guest_henna": {
+        "name": "Party / Guest Henna",
+        "description": "Non-bridal henna designs for guests, friends & family."
+      }
+    },
+    "coverage": {
+      "level1": "Palm Only",
+      "level2": "To Wrist",
+      "level3": "To Forearm",
+      "level4": "Full Arm"
+    }
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "Three quiet steps",
+    "desc": "From first choice to the moment you leave adorned — kept simple and unhurried.",
+    "step1_title": "Choose",
+    "step1_desc": "Pick a design and a studio time — morning, afternoon or evening.",
+    "step2_title": "Confirm",
+    "step2_desc": "Share your transfer receipt to secure the date — a small deposit holds it.",
+    "step3_title": "Adorned",
+    "step3_desc": "Arrive, settle in, and leave with work that lasts the celebration."
+  },
+  "gallery": {
+    "eyebrow": "Portfolio",
+    "title": "Recent work",
+    "view_all": "View full portfolio",
+    "heading": "Our Portfolio",
+    "sub": "A decade of artistry — browse our full collection.",
+    "desc": "A glimpse of the hands, the moments and the fine detail. Drag to browse.",
+    "filters": {
+      "all": "All",
+      "intricate_indian_bride": "Indian Bride",
+      "floral_arabic_bride": "Arabic Bride",
+      "minimalistic_bride": "Minimalistic",
+      "party_guest_henna": "Party"
+    }
+  },
+  "testimonials": {
+    "eyebrow": "Client stories",
+    "title": "What our clients say"
+  },
+  "blog": {
+    "eyebrow": "Journal",
+    "heading": "From our journal",
+    "all_posts": "All posts",
+    "coming_soon": "Our first posts are coming soon.",
+    "read_more": "Read More →",
+    "not_found": "Post not found.",
+    "back_to_journal": "← Back to Journal",
+    "content_placeholder": "Full article content will be rendered here from the TipTap JSON."
+  },
+  "policies": {
+    "title": "Booking Policies",
+    "eyebrow": "Good to know",
+    "items": {
+      "advance": {
+        "title": "Advance Booking",
+        "body": "All appointments must be booked a minimum of 14 days in advance to ensure design preparation and slot availability."
+      },
+      "deposit": {
+        "title": "Non-Refundable Deposit",
+        "body": "A deposit is required to secure your booking. This deposit is strictly non-refundable."
+      },
+      "cones": {
+        "title": "Complimentary Henna Cones",
+        "body": "All henna cones used during your appointment are complimentary — there is no additional charge for materials."
+      },
+      "changes": {
+        "title": "Appointment Changes",
+        "body": "Should you need to reschedule, please notify us at least 7 days before your appointment date."
+      },
+      "travel": {
+        "title": "Travel / Mobile Service",
+        "body": "Travel charges may apply depending on your location and will be quoted separately."
+      }
+    }
+  },
+  "booking": {
+    "title": "Book Your Session",
+    "step1": "Service",
+    "step2": "Date & Time",
+    "step3": "Your Details",
+    "step4": "Payment",
+    "step5": "Confirmed",
+    "back": "Back",
+    "continue": "Continue",
+    "submit": "Submit Booking",
+    "submitting": "Submitting…",
+    "error": "Something went wrong. Please try again.",
+    "group_quote": "Group Quote",
+    "details_title": "Your Details",
+    "details_sub": "We'll use this to confirm your booking and keep you updated.",
+    "field_name": "Full Name",
+    "field_phone": "Phone",
+    "field_email": "Email",
+    "field_occasion": "Occasion Type",
+    "field_notes": "Design Notes",
+    "occasion_placeholder": "Select occasion",
+    "notes_placeholder": "Any specific patterns, cultural requirements, or inspiration references…",
+    "choose_service": "Choose Your Service",
+    "select_service_sub": "Select a style and coverage level to see your price.",
+    "bridal": "Bridal",
+    "cones_complimentary": "Henna cones complimentary",
+    "group_prompt": "Booking for a group of 5 or more?",
+    "pick_date_time": "Pick a Date & Time",
+    "advance_notice": "Bookings require a minimum of {{days}} days advance notice.",
+    "first_available": "First available date: {{date}}",
+    "available_times": "Available Times",
+    "select_date_prompt": "Select a date to see available slots.",
+    "checking_availability": "Checking availability…",
+    "available": "Available",
+    "full": "Full",
+    "payment": "Payment",
+    "summary_title": "Booking Summary",
+    "summary_service": "Service",
+    "summary_coverage": "Coverage",
+    "summary_date": "Date",
+    "summary_slot": "Slot",
+    "summary_price": "Price",
+    "summary_deposit": "Deposit",
+    "bank_details_title": "Bank Transfer Details",
+    "bank_details_sub": "Bank account details are configured by the admin.",
+    "bank_details_desc": "Transfer the {{amount}} deposit and upload your receipt below.",
+    "deposit_notice": "The {{amount}} deposit is non-refundable. Your slot is held for 24 hours pending validation.",
+    "voucher_code_label": "Gift Voucher Code (optional)",
+    "drop_slip_prompt": "Drop your payment slip here",
+    "upload_slip_prompt": "Upload Payment Slip",
+    "upload_slip_types": "JPG, PNG, or PDF · Max 10 MB",
+    "success_title": "Booking Submitted!",
+    "success_sub": "You'll hear from us within 24 hours via email and WhatsApp.",
+    "reference_label": "Booking Reference",
+    "pending_validation": "Pending Validation",
+    "add_to_calendar": "Add to Calendar",
+    "share_whatsapp": "Share on WhatsApp",
+    "whatsapp_share_text": "My booking reference is {{ref}}. Looking forward to my appointment on {{date}}!",
+    "confirmed_title": "You're Booked!",
+    "confirmed_sub": "Confirmation sent to your email and WhatsApp. Reference: {{ref}}",
+    "back_to_home": "Back to Home",
+    "group_quote_sub": "For groups of 5 or more, we offer custom packages. Fill in the form and we'll get back to you.",
+    "group_field_name": "Your name *",
+    "group_field_phone": "Phone number *",
+    "group_field_email": "Email address *",
+    "group_field_message": "Tell us about your event (number of guests, date, venue, style preferences)…",
+    "sending": "Sending…",
+    "group_submit": "Send Quote Request",
+    "group_error": "Could not submit. Please try again.",
+    "group_success": "Quote request sent! We'll be in touch within 24 hours.",
+    "occasions": {
+      "wedding": "Wedding",
+      "engagement": "Engagement",
+      "eid": "Eid",
+      "birthday": "Birthday",
+      "party": "Party",
+      "other": "Other"
+    },
+    "slots": {
+      "morning_label": "Morning Session",
+      "afternoon_label": "Afternoon Session",
+      "evening_label": "Evening Session"
+    }
+  },
+  "footer": {
+    "tagline": "Bridal & occasion artistry, by appointment.",
+    "contact": "Contact",
+    "follow": "Connect",
+    "rights": "All rights reserved.",
+    "explore": "Explore"
+  },
+  "voucher": {
+    "nav_title": "Gift vouchers",
+    "title": "Gift a Henna Experience",
+    "subtitle": "The perfect gift for brides, birthdays, and celebrations.",
+    "recipient_details": "Recipient",
+    "purchaser_name": "Your name *",
+    "purchaser_email": "Your email *",
+    "recipient_name": "Recipient's name",
+    "recipient_email": "Recipient's email",
+    "processing": "Processing…",
+    "submit": "Purchase Gift Voucher",
+    "error_slip": "Please upload your payment slip.",
+    "error_failed": "Submission failed. Please try again.",
+    "success_title": "Gift Voucher Requested!",
+    "success_sub": "Your voucher will be validated and emailed within 24 hours.",
+    "code_label": "Voucher Code",
+    "expires_at": "Expires {{date}}"
+  },
+  "lookbook": {
+    "heading": "The Lookbook",
+    "sub": "Save your favourite looks to reference when you book.",
+    "coming_soon": "Lookbook coming soon — check back after the gallery is populated."
+  },
+  "home": {
+    "reserve_eyebrow": "The studio",
+    "reserve_title": "Reserve your seat",
+    "reserve_desc": "A small deposit holds your date. Confirmation follows once your transfer receipt is reviewed.",
+    "reserve_by_appointment": "By appointment",
+    "reserve_slots": "Morning · Afternoon · Evening",
+    "reserve_to_confirm": "To confirm",
+    "reserve_deposit": "Deposit required",
+    "reserve_reach_us": "Reach us",
+    "reserve_cta": "Book an appointment"
+  }
+}
