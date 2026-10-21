@@ -28,6 +28,7 @@ const SecurityLayout   = lazy(() => import('./pages/Security/Layout'))
 const SecurityRoles    = lazy(() => import('./pages/Security/Roles'))
 const PrivacyRequests  = lazy(() => import('./pages/Security/PrivacyRequests'))
 const SecurityMessages = lazy(() => import('./pages/Security/SecurityMessages'))
+const SecurityAuthGate = lazy(() => import('./pages/Security/SecurityAuthGate'))
 const Dashboard        = lazy(() => import('./pages/Admin/Dashboard'))
 const Bookings         = lazy(() => import('./pages/Admin/Bookings'))
 const ValidatePayment  = lazy(() => import('./pages/Admin/ValidatePayment'))
@@ -60,14 +61,16 @@ export default function App() {
     <Toaster position="bottom-right" toastOptions={{ style: { background: '#203238', color: '#f7f8f5', border: '1px solid #6f9b8e' } }} />
     <Suspense fallback={<Spinner />}>
       <Routes>
-        <Route path="/login" element={<SecurityLogin />} />
-        <Route path="/" element={<SecurityLayout />}>
-          <Route index element={<SecurityHome />} />
-          <Route path="roles" element={<SecurityRoles />} />
-          <Route path="privacy" element={<PrivacyRequests />} />
-          <Route path="messages" element={<SecurityMessages />} />
+        <Route element={<SecurityAuthGate />}>
+          <Route path="/login" element={<SecurityLogin />} />
+          <Route path="/" element={<SecurityLayout />}>
+            <Route index element={<SecurityHome />} />
+            <Route path="roles" element={<SecurityRoles />} />
+            <Route path="privacy" element={<PrivacyRequests />} />
+            <Route path="messages" element={<SecurityMessages />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
   </BrowserRouter>

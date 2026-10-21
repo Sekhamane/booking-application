@@ -36,3 +36,4 @@ ai/artifacts/
 .tools/
 
 .vercel
+.env*
