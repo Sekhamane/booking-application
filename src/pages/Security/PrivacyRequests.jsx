@@ -12,7 +12,11 @@ export default function PrivacyRequests() {
     if (error) toast.error('Unable to load privacy requests.')
     setRequests(data || [])
   }, [])
-  useEffect(() => { load() }, [load])
+  useEffect(() => {
+    let active = true
+    queueMicrotask(() => { if (active) load() })
+    return () => { active = false }
+  }, [load])
 
   const update = async (request, status) => {
     const adminNotes = notes[request.id] ?? request.admin_notes ?? ''

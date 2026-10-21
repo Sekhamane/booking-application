@@ -4,7 +4,7 @@ This is a checklist for a new Supabase project. Use the project SQL editor as a 
 
 ## 1. Create the schema
 
-Run `001_initial_schema.sql`, `002_security_and_booking_foundation.sql`, `003_seed_default_time_slots.sql`, `004_booking_status_transitions.sql`, `005_category_booking_details.sql`, `006_customer_waitlist_controls.sql`, and `007_provider_service_drafts.sql` in that order. Configure Auth email confirmation and set the deployed app URL in Supabase Auth's site and redirect URL settings.
+Run `001_initial_schema.sql`, `002_security_and_booking_foundation.sql`, `003_seed_default_time_slots.sql`, `004_booking_status_transitions.sql`, `005_category_booking_details.sql`, `006_customer_waitlist_controls.sql`, `007_provider_service_drafts.sql`, `008_restore_customers_relation.sql`, `009_qualify_customer_stats_trigger.sql`, `009_service_category_details.sql`, `010_security_messages.sql`, and `011_security_admin_access_control.sql` in that order. Migration 010 creates the message inbox used by the privacy notice and Security workspace. Migration 011 restricts audit-log access and security-role changes. Configure Auth email confirmation and set the deployed app URL in Supabase Auth's site and redirect URL settings.
 
 ## 2. Provision the first staff accounts
 

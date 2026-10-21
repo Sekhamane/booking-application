@@ -17,9 +17,10 @@ if df.empty:
     raise SystemExit("Input dataset contains no bookings")
 df["category"] = df["category"].fillna("general").astype(str)
 df["time_period"] = df["time_period"].fillna("Unspecified").astype(str)
-if "booking_count" in df.columns:
-    df["booking_count"] = pd.to_numeric(df["booking_count"], errors="coerce").fillna(0).clip(lower=0)
-    actual = df.groupby(["booking_date", "category", "time_period"])["booking_count"].sum().rename("actual_bookings")
+if "booking_count" in df.columns or "actual_bookings" in df.columns:
+    count_column = "booking_count" if "booking_count" in df.columns else "actual_bookings"
+    df[count_column] = pd.to_numeric(df[count_column], errors="coerce").fillna(0).clip(lower=0)
+    actual = df.groupby(["booking_date", "category", "time_period"])[count_column].sum().rename("actual_bookings")
 elif "status" in df.columns:
     df = df[df["status"].isin(["requested", "pending_slip", "pending_validation", "confirmed", "in_progress", "completed"])]
     actual = df.groupby(["booking_date", "category", "time_period"]).size().rename("actual_bookings")

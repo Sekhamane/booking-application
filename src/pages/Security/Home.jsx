@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { supabase, isOffline } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
-import { securityPath } from '../../lib/securityHost'
+import { isSecurityHost, securityPath } from '../../lib/securityHost'
 
 const card = { background: '#fff', border: '1px solid #dce5e0', borderRadius: 10, padding: 18 }
 const roleNames = ['customer', 'provider', 'admin', 'security_admin']
@@ -11,6 +11,7 @@ const localDate = value => value ? new Date(value).toLocaleString() : '—'
 
 export default function SecurityHome() {
   const { session, profile, loading, signOut } = useAuth()
+  const authorized = Boolean(session?.user && profile?.id === session.user.id && profile.role === 'security_admin')
   const [events, setEvents] = useState([])
   const [counts, setCounts] = useState({ customer: 0, provider: 0, admin: 0, security_admin: 0, pendingPrivacy: 0, openDeletions: 0 })
   const [fetching, setFetching] = useState(false)
@@ -18,7 +19,7 @@ export default function SecurityHome() {
   const [search, setSearch] = useState('')
 
   const refresh = useCallback(async () => {
-    if (!session?.user || isOffline || profile?.role !== 'security_admin') return
+    if (!session?.user || isOffline || !authorized) return
     setFetching(true)
     const [auditResult, profileResult, privacyResult] = await Promise.all([
       supabase.from('audit_logs').select('id, actor_id, action, resource_type, resource_id, outcome, metadata, created_at')
@@ -43,7 +44,7 @@ export default function SecurityHome() {
       }))
     }
     setFetching(false)
-  }, [session?.user, profile?.role])
+  }, [session?.user, authorized])
 
   useEffect(() => { refresh() }, [refresh])
 
@@ -56,8 +57,7 @@ export default function SecurityHome() {
   }), [events, filter, search])
 
   if (loading) return <main style={{ margin: '120px auto', textAlign: 'center' }}>Loading security workspace…</main>
-  if (!session) return <Navigate to="/account" replace />
-  if (profile?.role !== 'security_admin') return <Navigate to="/account" replace />
+  if (!session || !authorized) return <Navigate to={isSecurityHost ? '/login' : '/account'} replace />
 
   const metrics = [
     ['Customer accounts', counts.customer], ['Providers', counts.provider], ['Administrators', counts.admin],
@@ -79,6 +79,7 @@ export default function SecurityHome() {
       <section aria-label="Security administration" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12, marginBottom: 28 }}>
         <article style={card}><h2 style={{ marginTop: 0 }}>Roles and permissions</h2><p>Review accounts and assign customer, provider, admin, or security-admin access.</p><Link className="btn btn-primary" to={securityPath('roles')}>Manage roles</Link></article>
         <article style={card}><h2 style={{ marginTop: 0 }}>Privacy requests</h2><p>Review account export and deletion requests, record decisions, and track completion.</p><Link className="btn btn-primary" to={securityPath('privacy')}>Review requests</Link></article>
+        <article style={card}><h2 style={{ marginTop: 0 }}>Messages to Security</h2><p>Read and manage messages submitted through the privacy notice.</p><Link className="btn btn-primary" to={securityPath('messages')}>Review messages</Link></article>
       </section>
 
       <section style={card}>

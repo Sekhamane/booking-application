@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast'
 import { Suspense, lazy } from 'react'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
-import { isSecurityHost } from './lib/securityHost'
+import { isSecurityHost, securityHost } from './lib/securityHost'
 
 const Home             = lazy(() => import('./pages/Home'))
 const Book             = lazy(() => import('./pages/Book'))
@@ -12,6 +12,9 @@ const SecurityLogin    = lazy(() => import('./pages/Security/Login'))
 const AdminLayout      = lazy(() => import('./pages/Admin/AdminLayout'))
 const Account          = lazy(() => import('./pages/Account'))
 const PrivacyNotice    = lazy(() => import('./pages/PrivacyNotice'))
+const Blog             = lazy(() => import('./pages/Blog'))
+const BlogPost         = lazy(() => import('./pages/BlogPost'))
+const Gallery          = lazy(() => import('./pages/Gallery'))
 const AccountBookings  = lazy(() => import('./pages/AccountBookings'))
 const VerifyBooking    = lazy(() => import('./pages/VerifyBooking'))
 const ProviderHome     = lazy(() => import('./pages/Provider/Home'))
@@ -24,6 +27,7 @@ const SecurityHome     = lazy(() => import('./pages/Security/Home'))
 const SecurityLayout   = lazy(() => import('./pages/Security/Layout'))
 const SecurityRoles    = lazy(() => import('./pages/Security/Roles'))
 const PrivacyRequests  = lazy(() => import('./pages/Security/PrivacyRequests'))
+const SecurityMessages = lazy(() => import('./pages/Security/SecurityMessages'))
 const Dashboard        = lazy(() => import('./pages/Admin/Dashboard'))
 const Bookings         = lazy(() => import('./pages/Admin/Bookings'))
 const ValidatePayment  = lazy(() => import('./pages/Admin/ValidatePayment'))
@@ -61,6 +65,7 @@ export default function App() {
           <Route index element={<SecurityHome />} />
           <Route path="roles" element={<SecurityRoles />} />
           <Route path="privacy" element={<PrivacyRequests />} />
+          <Route path="messages" element={<SecurityMessages />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -77,6 +82,9 @@ export default function App() {
           <Route path="/book" element={<PublicLayout><Book /></PublicLayout>} />
           <Route path="/account" element={<PublicLayout><Account /></PublicLayout>} />
           <Route path="/privacy" element={<PublicLayout><PrivacyNotice /></PublicLayout>} />
+          <Route path="/blog" element={<PublicLayout><Blog /></PublicLayout>} />
+          <Route path="/blog/:slug" element={<PublicLayout><BlogPost /></PublicLayout>} />
+          <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
           <Route path="/account/bookings" element={<PublicLayout><AccountBookings /></PublicLayout>} />
           <Route path="/verify/:reference" element={<PublicLayout><VerifyBooking /></PublicLayout>} />
           <Route path="/provider" element={<PublicLayout><ProviderLayout /></PublicLayout>}>
@@ -86,11 +94,12 @@ export default function App() {
             <Route path="bookings" element={<ProviderBookings />} />
             <Route path="waitlist" element={<ProviderWaitlist />} />
           </Route>
-          <Route path="/security" element={<PublicLayout><SecurityLayout /></PublicLayout>}>
+          {!securityHost && <Route path="/security" element={<PublicLayout><SecurityLayout /></PublicLayout>}>
             <Route index element={<SecurityHome />} />
             <Route path="roles" element={<SecurityRoles />} />
             <Route path="privacy" element={<PrivacyRequests />} />
-          </Route>
+            <Route path="messages" element={<SecurityMessages />} />
+          </Route>}
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />

@@ -30,5 +30,9 @@ dist-ssr
 # Local and generated demand data can contain sensitive booking patterns.
 ai/data/bookings.csv
 ai/data/dataset_kind.json
+ai/data/hotels_public_source.csv
 ai/artifacts/
 .venv/
+.tools/
+
+.vercel

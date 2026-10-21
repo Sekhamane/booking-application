@@ -1,21 +1,33 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { Search } from 'lucide-react'
 import { supabase, isOffline } from '../../lib/supabase'
 
 const categoryLabel = { flights: 'Flights', accommodation: 'Stays', healthcare: 'Healthcare', general: 'Other services' }
 
 export default function ServiceSelector({ selected, coverage, onService, onCoverage }) {
-  const [params] = useSearchParams()
+  const [params, setParams] = useSearchParams()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(!isOffline)
   const [loadError, setLoadError] = useState(false)
   const category = params.get('category')
+  const [categoryDraft, setCategoryDraft] = useState(category || 'all')
+
+  useEffect(() => setCategoryDraft(category || 'all'), [category])
+
+  const searchByCategory = event => {
+    event.preventDefault()
+    const nextParams = new URLSearchParams(params)
+    if (categoryDraft === 'all') nextParams.delete('category')
+    else nextParams.set('category', categoryDraft)
+    setParams(nextParams)
+  }
 
   useEffect(() => {
     if (isOffline) return
     let active = true
     supabase.from('services')
-      .select('id, name, description, slug, category, currency, coverage_levels, duration_minutes, provider_id, provider_profiles(display_name)')
+      .select('id, name, description, slug, category, service_details, currency, coverage_levels, duration_minutes, provider_id, provider_profiles(display_name)')
       .eq('is_active', true).order('name')
       .then(({ data, error }) => {
         if (!active) return
@@ -41,6 +53,16 @@ export default function ServiceSelector({ selected, coverage, onService, onCover
       <p style={{ color: '#247468', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.15em', fontWeight: 700 }}>Step 1 · Choose a service</p>
       <h2 style={{ fontSize: 32, margin: '8px 0' }}>What would you like to book?</h2>
       <p style={{ color: '#526267', marginBottom: 28 }}>Choose a provider service and its available option. Providers set the current price.</p>
+      <form className="booking-category-search" onSubmit={searchByCategory}>
+        <label htmlFor="booking-category">Search by category</label>
+        <div className="booking-category-search-controls">
+          <select id="booking-category" value={categoryDraft} onChange={event => setCategoryDraft(event.target.value)}>
+            <option value="all">All categories</option>
+            {Object.entries(categoryLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select>
+          <button type="submit" className="btn btn-primary"><Search size={16} /> Search</button>
+        </div>
+      </form>
       {isOffline && <p>Connect Supabase to browse services and make a booking.</p>}
       {!isOffline && loading && <p>Loading available services…</p>}
       {!isOffline && !loading && visibleServices.length === 0 && <p>No services are available in this category yet.</p>}
@@ -54,6 +76,7 @@ export default function ServiceSelector({ selected, coverage, onService, onCover
             <span className="booking-service-category">{categoryLabel[service.category] || service.category || 'Service'}</span>
             <h3 style={{ fontSize: 21, margin: '9px 0 5px' }}>{service.name}</h3>
             <p style={{ color: '#526267', lineHeight: 1.5, minHeight: 42 }}>{service.description || 'A service provided by a verified provider.'}</p>
+            {Object.entries(service.service_details || {}).filter(([, value]) => value).length > 0 && <p style={{ color: '#40565b', fontSize: 13, lineHeight: 1.5 }}>{Object.entries(service.service_details).filter(([, value]) => value).map(([key, value]) => `${key.replaceAll('_', ' ')}: ${value}`).join(' · ')}</p>}
             <p style={{ fontSize: 13, color: '#526267' }}>Provider: {service.provider_profiles?.display_name || 'Service provider'} · {service.duration_minutes} min</p>
             {active && options.length > 1 && <label style={{ display: 'grid', gap: 6, margin: '14px 0' }} onClick={e => e.stopPropagation()}>
               <span>Booking option</span>

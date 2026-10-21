@@ -13,7 +13,7 @@ Open the local Vite URL, usually `http://localhost:5173`. Create `.env` from `.e
 
 ## Security Admin subdomain
 
-The security workspace can be served from a dedicated hostname while the marketplace remains on its main hostname. Set `VITE_SECURITY_HOST` to the exact security hostname (for example, `security.example.com`) before building. Requests on that hostname open only the Security Admin sign-in and workspace; other hosts retain the normal app routes. Add both domains to the hosting provider and add the security hostname to Supabase Auth's allowed redirect URLs. The subdomain provides a separate web origin, while database RLS and role checks remain the authorization boundary. See [`docs/security-and-permissions.md`](docs/security-and-permissions.md).
+The security workspace can be served from a dedicated hostname while the marketplace remains on its main hostname. Set `VITE_SECURITY_HOST` to the exact security hostname before building. The Security Vercel project must use `booking-security.vercel.app`; the main project should use the same value so security-admin links point to that deployment. The security hostname serves only Security Admin sign-in and workspace routes; the marketplace hostname does not expose those routes. Add both domains to the hosting provider and add the security hostname to Supabase Auth's allowed redirect URLs. The subdomain provides a separate web origin; database RLS and role checks remain the authorization boundary. For local development, set `VITE_SECURITY_HOST=security.localhost` and open `http://security.localhost:5173`. See [`docs/security-and-permissions.md`](docs/security-and-permissions.md) and [`docs/deployment-runbook.md`](docs/deployment-runbook.md).
 
 ## Supabase setup
 
@@ -28,6 +28,9 @@ Run these SQL migrations in order from the Supabase SQL editor:
 7. `supabase/migrations/007_provider_service_drafts.sql`
 8. `supabase/migrations/008_restore_customers_relation.sql`
 9. `supabase/migrations/009_qualify_customer_stats_trigger.sql`
+10. `supabase/migrations/009_service_category_details.sql`
+11. `supabase/migrations/010_security_messages.sql`
+12. `supabase/migrations/011_security_admin_access_control.sql`
 
 Then configure Supabase Auth email confirmation and trusted staff accounts as described in [`docs/first-run-setup.md`](docs/first-run-setup.md). Review existing grants and storage bucket policies. Do not grant roles from client signup metadata. See [`docs/security-and-permissions.md`](docs/security-and-permissions.md) for the permission matrix and data classification.
 

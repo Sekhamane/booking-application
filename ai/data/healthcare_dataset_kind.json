@@ -1,0 +1,10 @@
+{
+  "kind": "external_real_aggregated",
+  "dataset_name": "Medical Appointment No Shows (Brazil, 2016)",
+  "source": "https://www.kaggle.com/datasets/joniarroba/noshowappointments",
+  "source_license": "CC BY-NC-SA 4.0; educational/non-commercial use; attribution and share-alike apply",
+  "source_period": "2015-11-10 through 2016-06-08",
+  "measure": "Daily registered appointment count by booking-registration date; no-show rate retained only as an aggregate summary",
+  "aggregate_no_show_rate_percent": 20.19,
+  "privacy": "Aggregated counts only. Source identifiers, demographics, neighbourhood, and clinical columns are not written to disk."
+}

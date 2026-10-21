@@ -13,14 +13,15 @@ Every authenticated account gets the `customer` role. Provider, admin, and secur
 | Provider availability and services | — | Read availability | Manage own drafts; publish when active | Manage all | Read |
 | Waitlist | â€” | Join/read own | Read/update assigned service queue | Manage all | Read |
 | Published marketing content | Read | Read | Read | Manage | Read |
-| Audit events and privacy requests | â€” | Create/read own request | â€” | Read | Read/manage requests |
-| Role assignment/security policy | â€” | â€” | â€” | Provisioned out of band | Provisioned out of band |
+| Audit events | â€” | â€” | â€” | â€” | Read |
+| Privacy requests | â€” | Create/read own requests | â€” | â€” | Read/manage all requests |
+| Role assignment | â€” | â€” | â€” | Manage standard account roles | Manage all roles, including security-admin |
 
 The frontend route guards improve navigation only. Supabase RLS and security-definer database functions are the enforcement layer. Do not treat hidden buttons or routes as authorization.
 
 ## Security Admin hostname
 
-Set `VITE_SECURITY_HOST` to the exact security hostname at build time (for example, `security.example.com`). When opened on that host, the app exposes only the Security Admin sign-in and its audit, roles, and privacy-request screens. Configure the hostname as a custom domain for the same static deployment, retain SPA rewrites for `/`, `/roles`, and `/privacy`, and allow the hostname in Supabase Auth redirect URL settings. Local host-based development can use `VITE_SECURITY_HOST=security.localhost` and open `http://security.localhost:5173`. This is a separate browser origin and entry point; it does not replace database RLS, and it does not isolate the Supabase project or its API.
+Set `VITE_SECURITY_HOST` to the exact security hostname at build time (for example, `security.example.com`). When opened on that host, the app exposes only Security Admin sign-in and workspace routes (`/`, `/roles`, `/privacy`, and `/messages`). Security-admin links from the marketplace hostname point to the configured host, and `/security` is not exposed there while a separate host is configured. Configure the hostname as a custom domain for the same static deployment, retain the SPA rewrite for all paths, and allow the hostname in Supabase Auth redirect URL settings. Local host-based development can use `VITE_SECURITY_HOST=security.localhost` and open `http://security.localhost:5173`. This is a separate browser origin and entry point; it does not replace database RLS, and it does not isolate the Supabase project or its API.
 
 ## Data classification
 
@@ -35,7 +36,7 @@ Booking names, email, phone, notes, and payment documents belong in the protecte
 
 ## Database migration and bootstrap
 
-Apply migrations `001_initial_schema.sql` through `009_qualify_customer_stats_trigger.sql` in numerical order to a Supabase project. Migration 008 restores the `public.customers` table and its booking foreign-key relation, which provider booking queries embed. Migration 009 qualifies the customer-stats trigger's table references so booking confirmations work with the status RPC's restricted search path. Review the project's existing grants, storage buckets, and Auth email-confirmation settings as well: repository migrations cannot inspect or fix project-level configuration.
+Apply migrations `001_initial_schema.sql` through `011_security_admin_access_control.sql` in numerical order to a Supabase project, including both `009_qualify_customer_stats_trigger.sql` and `009_service_category_details.sql`. Migration 008 restores the `public.customers` table and its booking foreign-key relation, which provider booking queries embed. Migration 010 creates the customer-to-Security message inbox. Migration 011 limits audit-log reads to security admins and ensures ordinary admins cannot grant or revoke the security-admin role. Customers retain access only to their own privacy requests. Review the project's existing grants, storage buckets, and Auth email-confirmation settings as well: repository migrations cannot inspect or fix project-level configuration.
 
 The first administrator and security administrator must be created by a trusted operator in the Supabase SQL editor or another privileged server-side provisioning process. Never add a public “make me admin” signup option. Provider accounts require an administrator to grant the provider role and approve the provider profile before it can publish services or accept bookings. Pending providers can prepare unpublished service drafts; RLS prevents them from publishing until approved, and public catalogue reads exclude inactive providers.
 

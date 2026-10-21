@@ -10,12 +10,14 @@ This project uses Vite for the web app, Supabase for data/auth/Edge Functions, a
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
    - `VITE_CONTACT_EMAIL` and `VITE_CONTACT_PHONE` if desired
-   - `VITE_SECURITY_HOST` set to the exact security-admin hostname, for example `security.example.com`
-4. Add the main app domain and security hostname under Vercel Project → Settings → Domains. Both can point to this same deployment; the app uses the hostname to expose the restricted security workspace.
+   - `VITE_SECURITY_HOST` set to the exact security-admin hostname; for the Security Vercel project use `booking-security.vercel.app`. Set the same value in the main Vercel project if security-admin links on the main site should open the Security deployment. This is a build-time variable, so redeploy after changing it.
+4. Add the main app domain and security hostname under Vercel Project → Settings → Domains. Both point to this same deployment. The configured security hostname opens only the restricted Security Admin workspace, and security-admin links on the main site point to that hostname.
 5. Add both app URLs to Supabase Auth's allowed redirect URLs and configure the production site URL.
-6. Deploy the Supabase migrations in numerical order. Confirm the security hostname opens only the security-admin login/workspace and that normal routes still work on the main hostname.
+6. Deploy the Supabase migrations in numerical order. Confirm the security hostname opens only the security-admin login/workspace and that normal routes still work on the main hostname. With `VITE_SECURITY_HOST` configured, `/security` routes are disabled on the main hostname.
 
 Never set `SUPABASE_SERVICE_ROLE_KEY`, `BLOCKCHAIN_PRIVATE_KEY`, or RPC secrets as `VITE_*` variables. Keep server-only secrets in Supabase Function secrets.
+
+For local host-based development, set `VITE_SECURITY_HOST=security.localhost` in `.env`, restart Vite, and open `http://security.localhost:5173`. Use the actual security hostname as the Vercel value; `security.localhost` is only for local development.
 
 ## Deploy the booking proof contract to Sepolia
 

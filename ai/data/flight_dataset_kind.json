@@ -1,0 +1,8 @@
+{
+  "kind": "external_real_aggregate",
+  "dataset_name": "AirPassengers monthly airline passenger counts",
+  "source": "https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/datasets/AirPassengers.csv",
+  "source_period": "1949-01 through 1960-12",
+  "measure": "Monthly international airline passengers (thousands; traffic proxy, not booking transactions)",
+  "privacy": "Aggregate time series; contains no person-level records."
+}

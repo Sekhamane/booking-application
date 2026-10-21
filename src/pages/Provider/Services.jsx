@@ -3,7 +3,28 @@ import toast from 'react-hot-toast'
 import { supabase, isOffline } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 
-const empty = { name: '', category: 'general', description: '', duration: 60, price: '', currency: 'ZAR' }
+const empty = { name: '', category: 'general', description: '', duration: 60, price: '', currency: 'ZAR', details: {} }
+
+const categoryFields = {
+  flights: [
+    ['airline', 'Airline / carrier', 'text'], ['origin', 'Departure airport or city', 'text'],
+    ['destination', 'Destination airport or city', 'text'], ['cabin_class', 'Cabin classes offered', 'text'],
+    ['baggage_policy', 'Baggage allowance', 'text'],
+  ],
+  accommodation: [
+    ['property_type', 'Property type', 'text'], ['location', 'Location / address', 'text'],
+    ['check_in_time', 'Check-in time', 'text'], ['check_out_time', 'Check-out time', 'text'],
+    ['amenities', 'Amenities', 'text'],
+  ],
+  healthcare: [
+    ['specialty', 'Medical specialty', 'text'], ['practitioner', 'Practitioner / facility', 'text'],
+    ['visit_modes', 'Visit modes (in person, telehealth)', 'text'], ['appointment_type', 'Appointment types', 'text'],
+  ],
+  general: [
+    ['service_type', 'Service type', 'text'], ['location', 'Location / service area', 'text'],
+    ['delivery_mode', 'How the service is delivered', 'text'], ['requirements', 'Customer requirements', 'text'],
+  ],
+}
 
 export default function ProviderServices() {
   const { session } = useAuth()
@@ -20,7 +41,7 @@ export default function ProviderServices() {
     if (profileError) { toast.error('Unable to load your provider profile.'); setLoading(false); return }
     setProvider(profile)
     if (!profile) { setLoading(false); return }
-    const { data, error } = await supabase.from('services').select('id, name, slug, category, currency, description, duration_minutes, coverage_levels, is_active')
+    const { data, error } = await supabase.from('services').select('id, name, slug, category, currency, description, duration_minutes, coverage_levels, service_details, is_active')
       .eq('provider_id', profile.id).order('name')
     if (error) toast.error('Unable to load services.')
     else {
@@ -64,6 +85,7 @@ export default function ProviderServices() {
       name: form.name.trim(),
       slug: `${form.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'service'}-${crypto.randomUUID()}`,
       category: form.category,
+      service_details: form.details,
       description: form.description.trim(),
       duration_minutes: Number(form.duration),
       currency: form.currency,
@@ -76,6 +98,7 @@ export default function ProviderServices() {
     setBusy(false)
     if (error) {
       if (error.code === '42501') toast.error('Service draft permissions are not installed yet. Run supabase/migrations/007_provider_service_drafts.sql in the Supabase SQL Editor.')
+      else if (error.code === '42703' || error.message?.includes('service_details')) toast.error('Run supabase/migrations/009_service_category_details.sql in the Supabase SQL Editor, then try again.')
       else toast.error(error.message)
     }
     else { toast.success(provider.is_active ? 'Service published.' : 'Draft saved. It will stay hidden until your account is approved and you publish it.'); setForm(empty); load() }
@@ -98,7 +121,8 @@ export default function ProviderServices() {
     {provider && !provider.is_active && <aside role="status" style={{ margin: '18px 0', padding: 16, color: '#49380d', background: '#fff7e6', border: '1px solid #e6d39b', borderRadius: 9 }}><strong>Your provider account is awaiting approval.</strong><br />You can prepare service drafts now. They remain hidden from customers until an administrator approves your account and you publish them.</aside>}
     {provider && <form onSubmit={save} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 12, padding: 20, background: '#fff', border: '1px solid #dce5e0', borderRadius: 10 }}>
       <label>Service name<input required maxLength={100} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></label>
-      <label>Category<select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>{[['flights','Flights'],['accommodation','Stays and accommodation'],['healthcare','Healthcare'],['general','Other services']].map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <label>Category<select value={form.category} onChange={e => setForm({ ...form, category: e.target.value, details: {} })}>{[['flights','Flights'],['accommodation','Stays and accommodation'],['healthcare','Healthcare'],['general','Other services']].map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      {categoryFields[form.category].map(([key, label, type]) => <label key={`${form.category}-${key}`}>{label}<input required type={type} maxLength={180} value={form.details[key] || ''} onChange={e => setForm(current => ({ ...current, details: { ...current.details, [key]: e.target.value } }))} /></label>)}
       <label>Duration (minutes)<input required type="number" min="5" max="1440" value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} /></label>
       <label>Price<input required type="number" min="0" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} /></label>
       <label>Currency<select value={form.currency} onChange={e => setForm({ ...form, currency: e.target.value })}>{['ZAR','USD','EUR','GBP'].map(currency => <option key={currency}>{currency}</option>)}</select></label>
@@ -107,7 +131,7 @@ export default function ProviderServices() {
     </form>}
     <div style={{ display: 'grid', gap: 12, marginTop: 22 }}>
       {services.map(service => <article key={service.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 18, alignItems: 'center', padding: 18, background: '#fff', border: '1px solid #dce5e0', borderRadius: 9 }}>
-        <div><strong>{service.name}</strong><p style={{ color: "#526267", margin: "5px 0" }}>{service.category} · {service.duration_minutes} minutes · {service.coverage_levels?.[0]?.price} {service.currency} · {service.is_active ? "Published" : provider?.is_active ? "Paused" : "Draft"}</p><p style={{ color: '#40565b', margin: '6px 0 0', fontSize: 13 }}>{service.booking_stats ? <>{service.booking_stats.total} customer booking{service.booking_stats.total === 1 ? '' : 's'} · {service.booking_stats.upcoming} upcoming{service.booking_stats.requested ? ` · ${service.booking_stats.requested} awaiting response` : ''}</> : 'Booking counts unavailable'}</p></div>
+        <div><strong>{service.name}</strong><p style={{ color: "#526267", margin: "5px 0" }}>{service.category} · {service.duration_minutes} minutes · {service.coverage_levels?.[0]?.price} {service.currency} · {service.is_active ? "Published" : provider?.is_active ? "Paused" : "Draft"}</p>{Object.entries(service.service_details || {}).filter(([, value]) => value).length > 0 && <p style={{ color: '#40565b', margin: '6px 0', fontSize: 13 }}>{Object.entries(service.service_details).filter(([, value]) => value).map(([key, value]) => `${key.replaceAll('_', ' ')}: ${value}`).join(' · ')}</p>}<p style={{ color: '#40565b', margin: '6px 0 0', fontSize: 13 }}>{service.booking_stats ? <>{service.booking_stats.total} customer booking{service.booking_stats.total === 1 ? '' : 's'} · {service.booking_stats.upcoming} upcoming{service.booking_stats.requested ? ` · ${service.booking_stats.requested} awaiting response` : ''}</> : 'Booking counts unavailable'}</p></div>
         <button className="btn btn-secondary" disabled={!service.is_active && !provider?.is_active} onClick={() => toggle(service)}>{service.is_active ? "Pause" : provider?.is_active ? "Publish" : "Awaiting approval"}</button>
       </article>)}
       {loading && <p>Loading services...</p>}
