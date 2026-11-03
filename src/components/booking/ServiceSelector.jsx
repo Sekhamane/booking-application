@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { supabase, isOffline } from '../../lib/supabase'
-
-const categoryLabel = { flights: 'Flights', accommodation: 'Stays', general: 'Other services' }
+import { CATEGORY_LABELS, SUPPORTED_CATEGORIES } from '../../constants/categories'
 
 export default function ServiceSelector({ selected, coverage, onService, onCoverage }) {
   const [params, setParams] = useSearchParams()
@@ -13,7 +12,9 @@ export default function ServiceSelector({ selected, coverage, onService, onCover
   const category = params.get('category')
   const [categoryDraft, setCategoryDraft] = useState(category || 'all')
 
-  useEffect(() => setCategoryDraft(category || 'all'), [category])
+  useEffect(() => {
+    queueMicrotask(() => setCategoryDraft(category || 'all'))
+  }, [category])
 
   const searchByCategory = event => {
     event.preventDefault()
@@ -28,7 +29,7 @@ export default function ServiceSelector({ selected, coverage, onService, onCover
     let active = true
     supabase.from('services')
       .select('id, name, description, slug, category, service_details, currency, coverage_levels, duration_minutes, provider_id, provider_profiles(display_name)')
-      .eq('is_active', true).in('category', Object.keys(categoryLabel)).order('name')
+      .eq('is_active', true).in('category', SUPPORTED_CATEGORIES).order('name')
       .then(({ data, error }) => {
         if (!active) return
         if (error) { console.error('Unable to load services', error); setLoadError(true) }
@@ -58,7 +59,7 @@ export default function ServiceSelector({ selected, coverage, onService, onCover
         <div className="booking-category-search-controls">
           <select id="booking-category" value={categoryDraft} onChange={event => setCategoryDraft(event.target.value)}>
             <option value="all">All categories</option>
-            {Object.entries(categoryLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            {Object.entries(CATEGORY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
           <button type="submit" className="btn btn-primary"><Search size={16} /> Search</button>
         </div>
@@ -73,7 +74,7 @@ export default function ServiceSelector({ selected, coverage, onService, onCover
           const active = selected === service.id
           const option = options.find(item => Number(item.level) === Number(coverage)) || options[0]
           return <article key={service.id} className={`booking-service-card ${active ? 'is-selected' : ''}`} role="radio" aria-checked={active} tabIndex={0} onClick={() => onService(service.id, service)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onService(service.id, service) } }}>
-            <span className="booking-service-category">{categoryLabel[service.category] || service.category || 'Service'}</span>
+            <span className="booking-service-category">{CATEGORY_LABELS[service.category]}</span>
             <h3 style={{ fontSize: 21, margin: '9px 0 5px' }}>{service.name}</h3>
             <p style={{ color: '#526267', lineHeight: 1.5, minHeight: 42 }}>{service.description || 'A service provided by a verified provider.'}</p>
             {Object.entries(service.service_details || {}).filter(([, value]) => value).length > 0 && <p style={{ color: '#40565b', fontSize: 13, lineHeight: 1.5 }}>{Object.entries(service.service_details).filter(([, value]) => value).map(([key, value]) => `${key.replaceAll('_', ' ')}: ${value}`).join(' · ')}</p>}

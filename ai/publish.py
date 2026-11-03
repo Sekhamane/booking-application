@@ -8,14 +8,13 @@ from supabase import create_client
 root = Path(__file__).parent
 parser = argparse.ArgumentParser(description="Publish selected trained demand forecast runs to Supabase.")
 parser.add_argument(
-    "--domains", nargs="+", choices=("accommodation", "healthcare", "flights"),
-    default=("accommodation", "healthcare", "flights"),
+    "--domains", nargs="+", choices=("accommodation", "flights"),
+    default=("accommodation", "flights"),
     help="Model domains to publish (default: all available domains).",
 )
 args = parser.parse_args()
 run_paths_by_domain = {
     "accommodation": root / "artifacts" / "run.json",
-    "healthcare": root / "artifacts" / "healthcare" / "run.json",
     "flights": root / "artifacts" / "flights" / "run.json",
 }
 run_paths = [run_paths_by_domain[domain] for domain in args.domains if run_paths_by_domain[domain].exists()]

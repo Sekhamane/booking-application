@@ -15,7 +15,7 @@ py ai/train.py
 
 For the external real-data benchmark, run `./ai/download_public_hotel_data.ps1`, then `py ai/prepare_public_hotel_data.py`, `py ai/prepare_data.py`, and `py ai/train.py`. Its provenance is recorded in `ai/data/dataset_kind.json`; do not delete that marker. For first-party results, an authorized operator can export counts using `ai/data/export_real_bookings.sql`, replace `ai/data/bookings.csv`, and retrain. See `ai/data/README.md` and `ai/RESULTS.md`.
 
-For flight and healthcare benchmark datasets, see `ai/data/MULTIDOMAIN_DATASETS.md` and run `py ai/build_domain_datasets.py`. Train the daily healthcare series and monthly flight series separately using the commands there. The flight data is a historical passenger-traffic proxy rather than ticket sales; the healthcare builder only writes daily aggregated counts.
+For the flight benchmark dataset, see `ai/data/MULTIDOMAIN_DATASETS.md` and run `py ai/build_domain_datasets.py`. The flight data is a historical passenger-traffic proxy rather than ticket sales.
 
 ## Publish forecasts
 

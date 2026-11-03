@@ -9,7 +9,6 @@ const labels = {
   check_out: 'Check-out',
   guests: 'Guests',
   rooms: 'Rooms',
-  visit_mode: 'Visit type',
 }
 
 export function bookingDetailEntries(details) {

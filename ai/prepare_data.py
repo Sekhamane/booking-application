@@ -15,7 +15,11 @@ if not required.issubset(df.columns):
     raise SystemExit(f"Input must contain: {', '.join(sorted(required))}")
 if df.empty:
     raise SystemExit("Input dataset contains no bookings")
-df["category"] = df["category"].fillna("general").astype(str)
+df["category"] = df["category"].astype("string").str.strip().str.lower()
+unsupported = sorted(set(df["category"].dropna()) - {"flights", "accommodation"})
+if unsupported:
+    raise SystemExit(f"Unsupported categories: {', '.join(unsupported)}")
+df = df.dropna(subset=["category"])
 df["time_period"] = df["time_period"].fillna("Unspecified").astype(str)
 if "booking_count" in df.columns or "actual_bookings" in df.columns:
     count_column = "booking_count" if "booking_count" in df.columns else "actual_bookings"

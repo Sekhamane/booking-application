@@ -2,8 +2,9 @@
 import toast from 'react-hot-toast'
 import { supabase, isOffline } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
+import { CATEGORY_LABELS, SUPPORTED_CATEGORIES } from '../../constants/categories'
 
-const empty = { name: '', category: 'general', description: '', duration: 60, price: '', currency: 'ZAR', details: {} }
+const empty = { name: '', category: 'flights', description: '', duration: 60, price: '', currency: 'ZAR', details: {} }
 
 const categoryFields = {
   flights: [
@@ -15,10 +16,6 @@ const categoryFields = {
     ['property_type', 'Property type', 'text'], ['location', 'Location / address', 'text'],
     ['check_in_time', 'Check-in time', 'text'], ['check_out_time', 'Check-out time', 'text'],
     ['amenities', 'Amenities', 'text'],
-  ],
-  general: [
-    ['service_type', 'Service type', 'text'], ['location', 'Location / service area', 'text'],
-    ['delivery_mode', 'How the service is delivered', 'text'], ['requirements', 'Customer requirements', 'text'],
   ],
 }
 
@@ -38,7 +35,7 @@ export default function ProviderServices() {
     setProvider(profile)
     if (!profile) { setLoading(false); return }
     const { data, error } = await supabase.from('services').select('id, name, slug, category, currency, description, duration_minutes, coverage_levels, service_details, is_active')
-      .eq('provider_id', profile.id).in('category', ['flights', 'accommodation', 'general']).order('name')
+      .eq('provider_id', profile.id).in('category', SUPPORTED_CATEGORIES).order('name')
     if (error) toast.error('Unable to load services.')
     else {
       const serviceRows = data || []
@@ -117,7 +114,7 @@ export default function ProviderServices() {
     {provider && !provider.is_active && <aside role="status" style={{ margin: '18px 0', padding: 16, color: '#49380d', background: '#fff7e6', border: '1px solid #e6d39b', borderRadius: 9 }}><strong>Your provider account is awaiting approval.</strong><br />You can prepare service drafts now. They remain hidden from customers until an administrator approves your account and you publish them.</aside>}
     {provider && <form onSubmit={save} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 12, padding: 20, background: '#fff', border: '1px solid #dce5e0', borderRadius: 10 }}>
       <label>Service name<input required maxLength={100} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></label>
-      <label>Category<select value={form.category} onChange={e => setForm({ ...form, category: e.target.value, details: {} })}>{[['flights','Flights'],['accommodation','Stays and accommodation'],['general','Other services']].map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <label>Category<select value={form.category} onChange={e => setForm({ ...form, category: e.target.value, details: {} })}>{SUPPORTED_CATEGORIES.map(value => <option key={value} value={value}>{CATEGORY_LABELS[value]}</option>)}</select></label>
       {categoryFields[form.category].map(([key, label, type]) => <label key={`${form.category}-${key}`}>{label}<input required type={type} maxLength={180} value={form.details[key] || ''} onChange={e => setForm(current => ({ ...current, details: { ...current.details, [key]: e.target.value } }))} /></label>)}
       <label>Duration (minutes)<input required type="number" min="5" max="1440" value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} /></label>
       <label>Price<input required type="number" min="0" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} /></label>
@@ -127,7 +124,7 @@ export default function ProviderServices() {
     </form>}
     <div style={{ display: 'grid', gap: 12, marginTop: 22 }}>
       {services.map(service => <article key={service.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 18, alignItems: 'center', padding: 18, background: '#fff', border: '1px solid #dce5e0', borderRadius: 9 }}>
-        <div><strong>{service.name}</strong><p style={{ color: "#526267", margin: "5px 0" }}>{service.category} · {service.duration_minutes} minutes · {service.coverage_levels?.[0]?.price} {service.currency} · {service.is_active ? "Published" : provider?.is_active ? "Paused" : "Draft"}</p>{Object.entries(service.service_details || {}).filter(([, value]) => value).length > 0 && <p style={{ color: '#40565b', margin: '6px 0', fontSize: 13 }}>{Object.entries(service.service_details).filter(([, value]) => value).map(([key, value]) => `${key.replaceAll('_', ' ')}: ${value}`).join(' · ')}</p>}<p style={{ color: '#40565b', margin: '6px 0 0', fontSize: 13 }}>{service.booking_stats ? <>{service.booking_stats.total} customer booking{service.booking_stats.total === 1 ? '' : 's'} · {service.booking_stats.upcoming} upcoming{service.booking_stats.requested ? ` · ${service.booking_stats.requested} awaiting response` : ''}</> : 'Booking counts unavailable'}</p></div>
+        <div><strong>{service.name}</strong><p style={{ color: "#526267", margin: "5px 0" }}>{CATEGORY_LABELS[service.category]} · {service.duration_minutes} minutes · {service.coverage_levels?.[0]?.price} {service.currency} · {service.is_active ? "Published" : provider?.is_active ? "Paused" : "Draft"}</p>{Object.entries(service.service_details || {}).filter(([, value]) => value).length > 0 && <p style={{ color: '#40565b', margin: '6px 0', fontSize: 13 }}>{Object.entries(service.service_details).filter(([, value]) => value).map(([key, value]) => `${key.replaceAll('_', ' ')}: ${value}`).join(' · ')}</p>}<p style={{ color: '#40565b', margin: '6px 0 0', fontSize: 13 }}>{service.booking_stats ? <>{service.booking_stats.total} customer booking{service.booking_stats.total === 1 ? '' : 's'} · {service.booking_stats.upcoming} upcoming{service.booking_stats.requested ? ` · ${service.booking_stats.requested} awaiting response` : ''}</> : 'Booking counts unavailable'}</p></div>
         <button className="btn btn-secondary" disabled={!service.is_active && !provider?.is_active} onClick={() => toggle(service)}>{service.is_active ? "Pause" : provider?.is_active ? "Publish" : "Awaiting approval"}</button>
       </article>)}
       {loading && <p>Loading services...</p>}

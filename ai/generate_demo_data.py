@@ -8,9 +8,7 @@ from pathlib import Path
 random.seed(42)
 out = Path(__file__).parent / "data" / "bookings.csv"
 out.parent.mkdir(parents=True, exist_ok=True)
-categories = {"Domestic flight booking": 5.2, "International flight booking": 3.1,
-              "Hotel room reservation": 7.0, "Hospital appointment": 3.4,
-              "Local transport booking": 2.1}
+categories = {"flights": 8.3, "accommodation": 7.0}
 periods = {"Morning": 1.3, "Afternoon": 1.0, "Evening": 0.72}
 end = date.today() - timedelta(days=1)
 start = end - timedelta(days=730)

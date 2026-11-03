@@ -1,6 +1,6 @@
 # Teabag Booking Platform
 
-A category-based booking platform for flights, accommodation, and other provider services. It provides customer, provider, admin, and security-admin workspaces.
+A category-based booking platform for flights and accommodation. It provides customer, provider, admin, and security-admin workspaces.
 
 ## Local development
 
@@ -31,18 +31,19 @@ Run these SQL migrations in order from the Supabase SQL editor:
 10. `supabase/migrations/009_service_category_details.sql`
 11. `supabase/migrations/010_security_messages.sql`
 12. `supabase/migrations/011_security_admin_access_control.sql`
+13. `supabase/migrations/012_flights_accommodation_only.sql`
 
 Then configure Supabase Auth email confirmation and trusted staff accounts as described in [`docs/first-run-setup.md`](docs/first-run-setup.md). Review existing grants and storage bucket policies. Do not grant roles from client signup metadata. See [`docs/security-and-permissions.md`](docs/security-and-permissions.md) for the permission matrix and data classification.
 
 Providers can prepare private service drafts before approval and publish them after an admin activates their provider profile. The seed migration provides half-hour start times from 08:00 to 20:00; providers select their own weekly slots. A bookable service needs an active provider profile and `coverage_levels` JSON containing at least one `{ "level": 1, "label": "Standard", "price": 100 }` option. Booking creation reads that price server-side, checks the schedule and blackout dates, serializes requests per provider/date, rejects overlapping durations, and also uses a unique index to prevent duplicate active reservations for the same slot.
 
-This is a general appointment booking foundation. Flights and hotels are represented as provider services today; airline fare inventory and hotel room/night inventory require dedicated domain modules and external integrations before those categories can be used for live reservations.
+Flights and accommodation are represented as provider services today; airline fare inventory and hotel room/night inventory require dedicated domain modules and external integrations before those categories can be used for live reservations.
 
 The category-aware request form collects flight route/trip dates/passenger count or accommodation destination/stay dates/guest count. The server validates and stores those fields atomically with the booking, and the booking RLS rules protect them. This supports provider-assisted requests; it does not reserve airline seats or hotel nights in third-party systems.
 
 ## AI demand prediction
 
-The Python pipeline in [`ai/`](ai/) prepares anonymized daily service/time-period demand, trains a Random Forest, evaluates it against a chronological holdout and lag-seven baseline, measures learning-curve saturation, and publishes aggregate results to protected Supabase tables. See [`ai/README.md`](ai/README.md). Do not interpret synthetic demo scores as real-world accuracy.
+The Python pipeline in [`ai/`](ai/) prepares anonymized service/time-period demand for flights and accommodation, trains a Random Forest, evaluates it against a chronological holdout and lag-seven baseline, measures learning-curve saturation, and publishes aggregate results to protected Supabase tables. See [`ai/README.md`](ai/README.md). Do not interpret synthetic demo scores as real-world accuracy.
 
 ## Blockchain record proofs
 

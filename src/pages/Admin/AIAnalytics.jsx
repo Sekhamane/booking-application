@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase, isOffline } from '../../lib/supabase'
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { SUPPORTED_CATEGORIES } from '../../constants/categories'
 
 export default function AIAnalytics() {
   const [model, setModel] = useState(null)
@@ -43,8 +44,8 @@ export default function AIAnalytics() {
       ])
       if (!active) return
       if (forecast.error || history.error) setError('Unable to load demand analysis.')
-      setForecastRows(forecast.data || [])
-      setHistoryRows(history.data || [])
+      setForecastRows((forecast.data || []).filter(row => SUPPORTED_CATEGORIES.includes(row.category)))
+      setHistoryRows((history.data || []).filter(row => SUPPORTED_CATEGORIES.includes(row.category)))
       setLoading(false)
     }
     load()

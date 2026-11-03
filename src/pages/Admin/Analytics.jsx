@@ -1,6 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, CartesianGrid, LineChart, Line } from 'recharts'
 import { useAnalytics } from '../../hooks/useAnalytics'
 import Spinner from '../../components/ui/Spinner'
+import { CATEGORY_LABELS, SUPPORTED_CATEGORIES } from '../../constants/categories'
 
 const COLORS = ['#247468', '#6f9b8e', '#8bc3b0', '#b8d7ca', '#d6e7dd']
 const card = { background: '#fff', border: '1px solid #dce5e0', borderRadius: 10, padding: 20 }
@@ -14,7 +15,9 @@ export default function Analytics() {
     ...row,
     month: new Date(`${row.month}T00:00:00`).toLocaleDateString(undefined, { month: 'short', year: '2-digit' }),
   }))
-  const category = (data?.by_category || []).map(row => ({ ...row, name: row.name.replaceAll('_', ' ') }))
+  const category = (data?.by_category || [])
+    .filter(row => SUPPORTED_CATEGORIES.includes(row.name))
+    .map(row => ({ ...row, name: CATEGORY_LABELS[row.name] }))
 
   return <div style={{ color: '#233238' }}>
     <h1 style={{ fontSize: 32, marginBottom: 8 }}>Booking analytics</h1>

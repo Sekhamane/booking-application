@@ -4,6 +4,7 @@ import { supabase, isOffline } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import { recordBookingProof } from '../../lib/blockchain'
 import { bookingDetailEntries } from '../../lib/bookingDetails'
+import { CATEGORY_LABELS, SUPPORTED_CATEGORIES } from '../../constants/categories'
 
 const card = { background: '#fff', border: '1px solid #dce5e0', borderRadius: 10, padding: 18 }
 
@@ -70,7 +71,7 @@ export default function ProviderBookings() {
       rows.push(...(data || []))
       if (!data || data.length < 1000) break
     }
-    setBookings(rows)
+    setBookings(rows.filter(row => SUPPORTED_CATEGORIES.includes(row.services?.category)))
     if (customerDetailsUnavailable) toast('Bookings loaded. Customer contact details will appear after the database repair is applied.')
     setLoading(false)
   }, [session])
@@ -109,7 +110,7 @@ export default function ProviderBookings() {
   const byService = Object.values(periodBookings.reduce((groups, booking) => {
     const id = booking.service_id || `unknown-${booking.id}`
     const name = booking.services?.name || 'Service'
-    groups[id] ||= { id, name, category: booking.services?.category, bookings: 0, value: {} }
+    groups[id] ||= { id, name, category: CATEGORY_LABELS[booking.services?.category], bookings: 0, value: {} }
     groups[id].bookings += 1
     if (['confirmed', 'in_progress', 'completed'].includes(booking.status)) {
       const currency = booking.price_currency || 'ZAR'

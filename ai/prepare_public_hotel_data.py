@@ -39,7 +39,7 @@ if not valid.any():
 
 events = pd.DataFrame({
     "booking_date": (arrival[valid] - pd.to_timedelta(lead_time[valid], unit="D")).dt.normalize(),
-    "category": "accommodation_" + df.loc[valid, "hotel"].astype(str).str.strip().str.lower().str.replace(r"\s+", "_", regex=True),
+    "category": "accommodation",
     # The source has no booking time-of-day field, so do not invent one.
     "time_period": "All day",
 })
