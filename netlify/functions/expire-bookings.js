@@ -8,7 +8,7 @@ exports.handler = async () => {
   const { data: expired } = await supabase
     .from('bookings')
     .select('id, reference_code, customers(email, name)')
-    .eq('status', 'pending_slip')
+    .eq('status', 'requested')
     .lt('created_at', cutoff)
 
   if (!expired?.length) return { statusCode: 200, body: JSON.stringify({ expired: 0 }) }

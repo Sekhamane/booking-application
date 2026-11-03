@@ -17,6 +17,10 @@ export default function SecurityHome() {
   const [fetching, setFetching] = useState(false)
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
+  const workspacePath = path => {
+    const cleanPath = path ? `/${path.replace(/^\/+/, '')}` : ''
+    return isSecurityHost ? securityPath(path) : `/security${cleanPath}`
+  }
 
   const refresh = useCallback(async () => {
     if (!session?.user || isOffline || !authorized) return
@@ -77,9 +81,9 @@ export default function SecurityHome() {
       </section>
 
       <section aria-label="Security administration" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12, marginBottom: 28 }}>
-        <article style={card}><h2 style={{ marginTop: 0 }}>Roles and permissions</h2><p>Review accounts and assign customer, provider, admin, or security-admin access.</p><Link className="btn btn-primary" to={securityPath('roles')}>Manage roles</Link></article>
-        <article style={card}><h2 style={{ marginTop: 0 }}>Privacy requests</h2><p>Review account export and deletion requests, record decisions, and track completion.</p><Link className="btn btn-primary" to={securityPath('privacy')}>Review requests</Link></article>
-        <article style={card}><h2 style={{ marginTop: 0 }}>Messages to Security</h2><p>Read and manage messages submitted through the privacy notice.</p><Link className="btn btn-primary" to={securityPath('messages')}>Review messages</Link></article>
+    <article style={card}><h2 style={{ marginTop: 0 }}>Roles and permissions</h2><p>Review accounts and assign customer, provider, admin, or security-admin access.</p><Link className="btn btn-primary" to={workspacePath('roles')}>Manage roles</Link></article>
+    <article style={card}><h2 style={{ marginTop: 0 }}>Privacy requests</h2><p>Review account export and deletion requests, record decisions, and track completion.</p><Link className="btn btn-primary" to={workspacePath('privacy')}>Review requests</Link></article>
+    <article style={card}><h2 style={{ marginTop: 0 }}>Messages to Security</h2><p>Read and manage messages submitted through the privacy notice.</p><Link className="btn btn-primary" to={workspacePath('messages')}>Review messages</Link></article>
       </section>
 
       <section style={card}>

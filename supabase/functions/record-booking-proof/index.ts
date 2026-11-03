@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { createPublicClient, createWalletClient, http, type Address, type Hex } from 'npm:viem'
 import { privateKeyToAccount } from 'npm:viem/accounts'
+import { getPublishableKey, getSecretKey } from '../_shared/supabaseKeys.ts'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -23,8 +24,8 @@ Deno.serve(async request => {
     const token = request.headers.get('Authorization')?.replace(/^Bearer\s+/i, '')
     if (!token) return Response.json({ error: 'Sign in required' }, { status: 401, headers: cors })
     const url = Deno.env.get('SUPABASE_URL')!
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
-    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const anonKey = getPublishableKey()
+    const serviceKey = getSecretKey()
     const userDb = createClient(url, anonKey, { global: { headers: { Authorization: `Bearer ${token}` } } })
     const { data: { user }, error: userError } = await userDb.auth.getUser(token)
     if (userError || !user) return Response.json({ error: 'Sign in required' }, { status: 401, headers: cors })
@@ -46,7 +47,6 @@ Deno.serve(async request => {
     const canonical = {
       schema: 'teabag.booking-event.v1',
       booking_id: booking.id,
-      reference_code: booking.reference_code,
       event_type: eventType,
       status: booking.status,
       booking_date: booking.booking_date,

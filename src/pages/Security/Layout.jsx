@@ -27,6 +27,10 @@ export default function SecurityLayout() {
   }, [loading, session?.user?.id, session?.access_token, authorized, signOut, signOutFinishedFor])
 
   const sessionKey = session?.access_token || session?.user?.id
+  const workspacePath = path => {
+    const cleanPath = path ? `/${path.replace(/^\/+/, '')}` : ''
+    return isSecurityHost ? securityPath(path) : `/security${cleanPath}`
+  }
   if (loading || (session && !authorized && signOutFinishedFor !== sessionKey)) {
     return <div className="security-workspace" style={{ padding: 140, textAlign: 'center' }}>Verifying security access…</div>
   }
@@ -40,10 +44,10 @@ export default function SecurityLayout() {
 
   return <div className="security-workspace">
     <nav aria-label="Security workspace" className="security-nav">
-      <Link to={securityPath()}>Audit activity</Link>
-      <Link to={securityPath('roles')}>Roles and permissions</Link>
-      <Link to={securityPath('privacy')}>Privacy requests</Link>
-      <Link to={securityPath('messages')}>Messages to Security</Link>
+      <Link to={workspacePath()}>Audit activity</Link>
+      <Link to={workspacePath('roles')}>Roles and permissions</Link>
+      <Link to={workspacePath('privacy')}>Privacy requests</Link>
+      <Link to={workspacePath('messages')}>Messages to Security</Link>
     </nav>
     <div style={{ paddingTop: 44 }}><Outlet /></div>
   </div>

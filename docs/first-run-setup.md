@@ -42,7 +42,7 @@ supabase functions deploy record-booking-proof
 supabase functions deploy verify-booking-proof
 ```
 
-Set `SUPABASE_SERVICE_ROLE_KEY` for all three functions. The deletion function also needs `SUPABASE_ANON_KEY`. The proof functions need `BLOCKCHAIN_RPC_URL`, `BLOCKCHAIN_CHAIN_ID`, `BLOCKCHAIN_NETWORK`, and `BLOCKCHAIN_CONTRACT_ADDRESS`; the record function also needs `BLOCKCHAIN_PRIVATE_KEY`. Deploy the registry contract and configure its relayer before turning on proof submission. Store all such values in Supabase Function secrets, not in `.env` or source control.
+Supabase injects its project URL and keys into Edge Functions; the code supports the current publishable/secret key maps and legacy anonymous/service-role names. Do not try to add `SUPABASE_*` keys as custom function secrets. The proof functions need `BLOCKCHAIN_RPC_URL`, `BLOCKCHAIN_CHAIN_ID`, `BLOCKCHAIN_NETWORK`, and `BLOCKCHAIN_CONTRACT_ADDRESS`; the record function also needs `BLOCKCHAIN_PRIVATE_KEY`. Deploy the registry contract and configure its relayer before turning on proof submission. Store blockchain values as Supabase Function secrets, not in `.env` or source control.
 
 ## Scope to understand before launch
 

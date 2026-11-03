@@ -8,7 +8,7 @@ export default function CustomerForm({ data, onChange, category, bookingDetails,
   return <section style={{ padding: '40px 0 24px', color: '#233238' }}>
     <p style={{ color: '#247468', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.15em', fontWeight: 700 }}>Step 3 · Your details</p>
     <h2 style={{ fontSize: 32, margin: '8px 0' }}>Confirm your contact details</h2>
-    <p style={{ color: '#526267', marginBottom: 28 }}>We use these details to manage your booking and send service updates. Please avoid entering payment card details or sensitive medical information in notes.</p>
+    <p style={{ color: '#526267', marginBottom: 28 }}>We use these details to manage your booking and send service updates. Please avoid entering payment card details in notes.</p>
     <div style={{ display: 'grid', gap: 16, maxWidth: 620 }}>
       <label>Full name<input style={inputStyle} autoComplete="name" value={data.name || ''} onChange={set('name')} required /></label>
       <label>Phone number<input style={inputStyle} autoComplete="tel" type="tel" inputMode="tel" minLength={7} maxLength={30} placeholder="e.g. +27 82 123 4567" value={data.phone || ''} onChange={set('phone')} required /><small style={{ display: 'block', color: '#526267', marginTop: 5 }}>Include your country code so the provider can reach you.</small></label>
@@ -33,11 +33,6 @@ export default function CustomerForm({ data, onChange, category, bookingDetails,
         <label>Check-out<input style={inputStyle} type="date" min={bookingDetails.check_in || minimumDate} value={bookingDetails.check_out || ''} onChange={setDetail('check_out')} required /></label>
         <label>Guests<input style={inputStyle} type="number" min="1" max="20" step="1" value={bookingDetails.guests ?? ''} onChange={setDetail('guests')} required /></label>
         <label>Rooms<input style={inputStyle} type="number" min="1" max="10" step="1" value={bookingDetails.rooms ?? ''} onChange={setDetail('rooms')} required /></label>
-      </section>}
-      {category === 'healthcare' && <section style={{ display: 'grid', gap: 12, padding: 18, background: '#edf5f1', borderRadius: 8 }}>
-        <h3 style={{ margin: 0 }}>Appointment preference</h3>
-        <label>Visit type<select style={inputStyle} value={bookingDetails.visit_mode || ''} onChange={setDetail('visit_mode')} required><option value="" disabled>Select one</option><option value="in_person">In person</option><option value="telehealth">Telehealth</option></select></label>
-        <p style={{ color: '#40565b', margin: 0, fontSize: 13 }}>Do not enter symptoms, diagnoses, or medical record details here. The provider will contact you through the appropriate private channel.</p>
       </section>}
       <label>Notes for the provider <span style={{ color: '#526267' }}>(optional)</span><textarea style={{ ...inputStyle, minHeight: 100, resize: 'vertical' }} maxLength={2000} value={data.notes || ''} onChange={set('notes')} /></label>
     </div>

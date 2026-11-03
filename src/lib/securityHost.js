@@ -1,9 +1,17 @@
 // Keep the dedicated Vercel security project fail-closed if its environment
 // variable is accidentally omitted from a production build. Deployments with a
 // custom security domain can still set VITE_SECURITY_HOST explicitly.
-export const securityHost = String(import.meta.env.VITE_SECURITY_HOST || 'booking-security.vercel.app').trim().toLowerCase()
+const productionSecurityHosts = [
+  'book-security.netlify.app',
+  'booking-security.netlify.app',
+  'booking-security.vercel.app',
+]
+const defaultSecurityHost = productionSecurityHosts[0]
 
-export const isSecurityHost = Boolean(securityHost) && window.location.hostname.toLowerCase() === securityHost
+export const securityHost = String(import.meta.env.VITE_SECURITY_HOST || defaultSecurityHost).trim().toLowerCase()
+
+const currentHost = window.location.hostname.toLowerCase()
+export const isSecurityHost = currentHost === securityHost || productionSecurityHosts.includes(currentHost)
 
 export const securityPath = (path = '') => {
   const cleanPath = path.replace(/^\/+/, '')

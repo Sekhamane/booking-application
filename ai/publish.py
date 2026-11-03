@@ -1,15 +1,26 @@
 """Publish anonymized forecast outputs to RLS-protected Supabase tables."""
+import argparse
 import json
 import os
 from pathlib import Path
 from supabase import create_client
 
 root = Path(__file__).parent
-run_paths = [root / "artifacts" / "run.json"]
-run_paths.extend(sorted((root / "artifacts").glob("*/run.json")))
-run_paths = [path for path in run_paths if path.exists()]
+parser = argparse.ArgumentParser(description="Publish selected trained demand forecast runs to Supabase.")
+parser.add_argument(
+    "--domains", nargs="+", choices=("accommodation", "healthcare", "flights"),
+    default=("accommodation", "healthcare", "flights"),
+    help="Model domains to publish (default: all available domains).",
+)
+args = parser.parse_args()
+run_paths_by_domain = {
+    "accommodation": root / "artifacts" / "run.json",
+    "healthcare": root / "artifacts" / "healthcare" / "run.json",
+    "flights": root / "artifacts" / "flights" / "run.json",
+}
+run_paths = [run_paths_by_domain[domain] for domain in args.domains if run_paths_by_domain[domain].exists()]
 if not run_paths:
-    raise SystemExit("No trained run.json artifacts found.")
+    raise SystemExit("No trained run.json artifacts found for the requested domains.")
 url = os.environ["SUPABASE_URL"]
 service_key = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 client = create_client(url, service_key)

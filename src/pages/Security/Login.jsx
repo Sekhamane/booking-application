@@ -29,9 +29,12 @@ export default function SecurityLogin() {
       const { data: profile, error: profileError } = await supabase.from('profiles')
         .select('id, role').eq('id', userId).maybeSingle()
       if (profileError || profile?.id !== userId || profile.role !== 'security_admin') {
+        if (profileError) console.error('Security login profile lookup failed:', profileError)
         await supabase.auth.signOut()
         authenticated = false
-        setAccessError(ACCESS_DENIED)
+        setAccessError(profileError
+          ? 'Unable to verify this account’s security role. The session was signed out.'
+          : ACCESS_DENIED)
         return
       }
 

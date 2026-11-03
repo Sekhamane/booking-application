@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { getPublishableKey, getSecretKey } from '../_shared/supabaseKeys.ts'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' }
 
@@ -9,8 +10,8 @@ Deno.serve(async request => {
     const token = request.headers.get('Authorization')?.replace(/^Bearer\s+/i, '')
     if (!token) return Response.json({ error: 'Sign in required' }, { status: 401, headers: cors })
     const url = Deno.env.get('SUPABASE_URL')!
-    const anon = Deno.env.get('SUPABASE_ANON_KEY')!
-    const service = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const anon = getPublishableKey()
+    const service = getSecretKey()
     const userDb = createClient(url, anon, { global: { headers: { Authorization: `Bearer ${token}` } } })
     const { data: { user } } = await userDb.auth.getUser(token)
     if (!user) return Response.json({ error: 'Sign in required' }, { status: 401, headers: cors })

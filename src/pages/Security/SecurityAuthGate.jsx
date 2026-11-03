@@ -36,7 +36,10 @@ export default function SecurityAuthGate() {
           .select('id, role').eq('id', session.user.id).maybeSingle()
         if (!active || requestId !== request.current) return
         if (error || profile?.id !== session.user.id || profile.role !== 'security_admin') {
-          setDenial('Access denied. This account is not assigned the security_admin role.')
+          if (error) console.error('Security profile lookup failed:', error)
+          setDenial(error
+            ? 'Unable to verify this account’s security role. The session was signed out.'
+            : 'Access denied. This account is not assigned the security_admin role.')
           await supabase.auth.signOut()
           if (active && requestId === request.current) setStatus('denied')
           return
@@ -46,7 +49,7 @@ export default function SecurityAuthGate() {
       } catch (error) {
         if (!active || requestId !== request.current) return
         console.error('Unable to verify security administrator access:', error)
-        setDenial('Access denied. This account is not assigned the security_admin role.')
+        setDenial('Unable to verify this account’s security role. The session was signed out.')
         await supabase.auth.signOut()
         if (active && requestId === request.current) setStatus('denied')
       }

@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast'
 import { Suspense, lazy } from 'react'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
-import { isSecurityHost, securityHost } from './lib/securityHost'
+import { isSecurityHost } from './lib/securityHost'
 
 const Home             = lazy(() => import('./pages/Home'))
 const Book             = lazy(() => import('./pages/Book'))
@@ -97,12 +97,12 @@ export default function App() {
             <Route path="bookings" element={<ProviderBookings />} />
             <Route path="waitlist" element={<ProviderWaitlist />} />
           </Route>
-          {!securityHost && <Route path="/security" element={<PublicLayout><SecurityLayout /></PublicLayout>}>
+          <Route path="/security" element={<PublicLayout><SecurityLayout /></PublicLayout>}>
             <Route index element={<SecurityHome />} />
             <Route path="roles" element={<SecurityRoles />} />
             <Route path="privacy" element={<PrivacyRequests />} />
             <Route path="messages" element={<SecurityMessages />} />
-          </Route>}
+          </Route>
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />

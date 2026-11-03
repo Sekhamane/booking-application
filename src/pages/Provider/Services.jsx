@@ -16,10 +16,6 @@ const categoryFields = {
     ['check_in_time', 'Check-in time', 'text'], ['check_out_time', 'Check-out time', 'text'],
     ['amenities', 'Amenities', 'text'],
   ],
-  healthcare: [
-    ['specialty', 'Medical specialty', 'text'], ['practitioner', 'Practitioner / facility', 'text'],
-    ['visit_modes', 'Visit modes (in person, telehealth)', 'text'], ['appointment_type', 'Appointment types', 'text'],
-  ],
   general: [
     ['service_type', 'Service type', 'text'], ['location', 'Location / service area', 'text'],
     ['delivery_mode', 'How the service is delivered', 'text'], ['requirements', 'Customer requirements', 'text'],
@@ -42,7 +38,7 @@ export default function ProviderServices() {
     setProvider(profile)
     if (!profile) { setLoading(false); return }
     const { data, error } = await supabase.from('services').select('id, name, slug, category, currency, description, duration_minutes, coverage_levels, service_details, is_active')
-      .eq('provider_id', profile.id).order('name')
+      .eq('provider_id', profile.id).in('category', ['flights', 'accommodation', 'general']).order('name')
     if (error) toast.error('Unable to load services.')
     else {
       const serviceRows = data || []
@@ -121,7 +117,7 @@ export default function ProviderServices() {
     {provider && !provider.is_active && <aside role="status" style={{ margin: '18px 0', padding: 16, color: '#49380d', background: '#fff7e6', border: '1px solid #e6d39b', borderRadius: 9 }}><strong>Your provider account is awaiting approval.</strong><br />You can prepare service drafts now. They remain hidden from customers until an administrator approves your account and you publish them.</aside>}
     {provider && <form onSubmit={save} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 12, padding: 20, background: '#fff', border: '1px solid #dce5e0', borderRadius: 10 }}>
       <label>Service name<input required maxLength={100} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></label>
-      <label>Category<select value={form.category} onChange={e => setForm({ ...form, category: e.target.value, details: {} })}>{[['flights','Flights'],['accommodation','Stays and accommodation'],['healthcare','Healthcare'],['general','Other services']].map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <label>Category<select value={form.category} onChange={e => setForm({ ...form, category: e.target.value, details: {} })}>{[['flights','Flights'],['accommodation','Stays and accommodation'],['general','Other services']].map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label>
       {categoryFields[form.category].map(([key, label, type]) => <label key={`${form.category}-${key}`}>{label}<input required type={type} maxLength={180} value={form.details[key] || ''} onChange={e => setForm(current => ({ ...current, details: { ...current.details, [key]: e.target.value } }))} /></label>)}
       <label>Duration (minutes)<input required type="number" min="5" max="1440" value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} /></label>
       <label>Price<input required type="number" min="0" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} /></label>

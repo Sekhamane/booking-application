@@ -1,6 +1,6 @@
 # Teabag Booking Platform
 
-A category-based booking platform for flights, accommodation, healthcare appointments, and other provider services. It provides customer, provider, admin, and security-admin workspaces.
+A category-based booking platform for flights, accommodation, and other provider services. It provides customer, provider, admin, and security-admin workspaces.
 
 ## Local development
 
@@ -36,9 +36,9 @@ Then configure Supabase Auth email confirmation and trusted staff accounts as de
 
 Providers can prepare private service drafts before approval and publish them after an admin activates their provider profile. The seed migration provides half-hour start times from 08:00 to 20:00; providers select their own weekly slots. A bookable service needs an active provider profile and `coverage_levels` JSON containing at least one `{ "level": 1, "label": "Standard", "price": 100 }` option. Booking creation reads that price server-side, checks the schedule and blackout dates, serializes requests per provider/date, rejects overlapping durations, and also uses a unique index to prevent duplicate active reservations for the same slot.
 
-This is a general appointment booking foundation. Flights and hotels are represented as provider services today; airline fare inventory, seat selection, hotel room/night inventory, and healthcare system integrations require dedicated domain modules and external integrations before those categories can be used for live reservations.
+This is a general appointment booking foundation. Flights and hotels are represented as provider services today; airline fare inventory and hotel room/night inventory require dedicated domain modules and external integrations before those categories can be used for live reservations.
 
-The category-aware request form collects flight route/trip dates/passenger count, accommodation destination/stay dates/guest count, or healthcare visit mode. The server validates and stores those fields atomically with the booking, and the booking RLS rules protect them. This supports provider-assisted requests; it does not reserve airline seats, hotel nights, or clinical appointments in third-party systems.
+The category-aware request form collects flight route/trip dates/passenger count or accommodation destination/stay dates/guest count. The server validates and stores those fields atomically with the booking, and the booking RLS rules protect them. This supports provider-assisted requests; it does not reserve airline seats or hotel nights in third-party systems.
 
 ## AI demand prediction
 

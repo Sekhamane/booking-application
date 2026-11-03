@@ -33,20 +33,18 @@ export default function Book() {
   }, [])
 
   if (authLoading) return <main className="booking-auth-state" aria-live="polite">Loading your account...</main>
-  if (!session) return <main className="booking-auth-state"><div className="booking-auth-card"><span className="booking-eyebrow">Book with confidence</span><h1>Sign in to continue</h1><p>Bookings are saved to your customer account so you can track updates and manage your plans in one place.</p><Link className="btn btn-primary" to="/account?mode=login">Sign in</Link><Link className="booking-create-account" to="/account?mode=register">New here? Create an account</Link></div></main>
-  if (profile?.role !== 'customer') return <Navigate to="/account" replace />
+  if (session && profile?.role !== 'customer') return <Navigate to="/account" replace />
 
   const categoryDetailsComplete = service?.category === 'flights'
     ? !!(bookingDetails.origin?.trim() && bookingDetails.destination?.trim() && ['one_way', 'return'].includes(bookingDetails.trip_type) && bookingDetails.travel_date && Number.isInteger(Number(bookingDetails.travelers)) && Number(bookingDetails.travelers) >= 1 && Number(bookingDetails.travelers) <= 20 && (bookingDetails.trip_type !== 'return' || (bookingDetails.return_date && bookingDetails.return_date >= bookingDetails.travel_date)))
     : service?.category === 'accommodation'
       ? !!(bookingDetails.destination?.trim() && bookingDetails.check_in && bookingDetails.check_out > bookingDetails.check_in && Number.isInteger(Number(bookingDetails.guests)) && Number(bookingDetails.guests) >= 1 && Number(bookingDetails.guests) <= 20 && Number.isInteger(Number(bookingDetails.rooms)) && Number(bookingDetails.rooms) >= 1 && Number(bookingDetails.rooms) <= 10)
-      : service?.category === 'healthcare'
-        ? ['in_person', 'telehealth'].includes(bookingDetails.visit_mode)
-        : true
+      : true
   const validPhone = customer.phone.replace(/[\s()+.-]/g, '').length >= 7
   const canContinue = step === 1 ? !!service : step === 2 ? !!(date && slot) : !!(customer.name?.trim() && validPhone && categoryDetailsComplete)
 
   const submit = async () => {
+    if (!session) { toast.error('Create an account to request a booking.'); return }
     if (isOffline) { toast.error('Connect Supabase to submit a booking.'); return }
     setSubmitting(true)
     try {
@@ -103,7 +101,9 @@ export default function Book() {
       {step === 4 && result && <BookingSuccess booking={result} />}
       {step < 4 && <div className="booking-actions">
         <button className="btn btn-secondary" onClick={() => setStep(current => Math.max(1, current - 1))} disabled={step === 1}>Back</button>
-        {step < 3 ? <button className="btn btn-primary" disabled={!canContinue} onClick={() => setStep(current => current + 1)}>Continue</button>
+        {step < 3 ? (!session && step === 1
+          ? <Link className="btn btn-primary" to="/account?mode=register">Create an account to book</Link>
+          : <button className="btn btn-primary" disabled={!canContinue} onClick={() => setStep(current => current + 1)}>Continue</button>)
           : <button className="btn btn-primary" disabled={!canContinue || submitting} onClick={submit}>{submitting ? 'Submitting…' : 'Request booking'}</button>}
       </div>}
       </div>

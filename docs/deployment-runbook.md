@@ -26,14 +26,12 @@ For local host-based development, set `VITE_SECURITY_HOST=security.localhost` in
 3. Deploy `BookingProofRegistry` with the relayer wallet's public address as the constructor argument. The deploying wallet becomes the contract owner; retain it for relayer rotation.
 4. Copy the deployed contract address and verify the deployed contract on the Sepolia explorer. Check `relayer()` matches the relayer public address.
 5. In Supabase project settings, set Edge Function secrets (or use `supabase secrets set` from a trusted terminal):
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
    - `BLOCKCHAIN_RPC_URL`
    - `BLOCKCHAIN_CHAIN_ID=11155111`
    - `BLOCKCHAIN_NETWORK=sepolia`
    - `BLOCKCHAIN_CONTRACT_ADDRESS` to the deployed address
    - `BLOCKCHAIN_PRIVATE_KEY` to the dedicated relayer private key
+   Supabase injects its project URL and API keys automatically. Set only the blockchain-specific values here; the function code supports Supabase's current key maps and legacy key names.
 6. Deploy `record-booking-proof` and `verify-booking-proof` with the Supabase CLI. For example: `supabase functions deploy record-booking-proof` and `supabase functions deploy verify-booking-proof`.
 7. Sign in as a customer, create a test booking, and confirm it is saved even if proof submission fails. With the function configured, confirm the proof appears on the booking and the verification page reports it valid. Inspect the transaction on Sepolia and confirm only the booking key and event hash are emitted.
 8. Test status transitions and retry behavior. Retain the test transaction links and contract address as deployment evidence for the assignment.

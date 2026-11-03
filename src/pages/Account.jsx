@@ -3,7 +3,6 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useAuth } from '../hooks/useAuth'
 import { isOffline, supabase } from '../lib/supabase'
-import { securityPath } from '../lib/securityHost'
 
 const inputStyle = {
   display: 'block', width: '100%', marginTop: 7, padding: '13px 14px', borderRadius: 8,
@@ -34,7 +33,7 @@ export default function Account() {
   const destination = (role) => {
     if (role === 'admin') return '/admin'
     if (role === 'provider') return '/provider'
-    if (role === 'security_admin') return securityPath()
+    if (role === 'security_admin') return '/security'
     return '/account/bookings'
   }
 

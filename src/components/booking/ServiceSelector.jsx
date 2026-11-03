@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { supabase, isOffline } from '../../lib/supabase'
 
-const categoryLabel = { flights: 'Flights', accommodation: 'Stays', healthcare: 'Healthcare', general: 'Other services' }
+const categoryLabel = { flights: 'Flights', accommodation: 'Stays', general: 'Other services' }
 
 export default function ServiceSelector({ selected, coverage, onService, onCoverage }) {
   const [params, setParams] = useSearchParams()
@@ -28,7 +28,7 @@ export default function ServiceSelector({ selected, coverage, onService, onCover
     let active = true
     supabase.from('services')
       .select('id, name, description, slug, category, service_details, currency, coverage_levels, duration_minutes, provider_id, provider_profiles(display_name)')
-      .eq('is_active', true).order('name')
+      .eq('is_active', true).in('category', Object.keys(categoryLabel)).order('name')
       .then(({ data, error }) => {
         if (!active) return
         if (error) { console.error('Unable to load services', error); setLoadError(true) }

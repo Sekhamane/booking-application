@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_SECURITY_HOST = "book-security.netlify.app"
+
+[functions."expire-bookings"]
+  schedule = "@hourly"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

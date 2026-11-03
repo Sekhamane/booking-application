@@ -1,5 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { createPublicClient, http, type Address, type Hex } from 'npm:viem'
+import { getSecretKey } from '../_shared/supabaseKeys.ts'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' }
 const abi = [{ type: 'function', name: 'verified', stateMutability: 'view', inputs: [{ name: 'bookingKey', type: 'bytes32' }, { name: 'eventHash', type: 'bytes32' }], outputs: [{ type: 'bool' }] }] as const
@@ -17,7 +18,7 @@ Deno.serve(async request => {
     if (typeof reference !== 'string' || !/^TB-[0-9]{4}-[A-F0-9]{10}$/i.test(reference)) {
       return Response.json({ error: 'Invalid booking reference' }, { status: 400, headers: cors })
     }
-    const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+    const db = createClient(Deno.env.get('SUPABASE_URL')!, getSecretKey())
     const { data: booking, error } = await db.from('bookings')
       .select('id, reference_code, status, booking_date, price_per_side, price_currency, services(name), provider_profiles(display_name)')
       .eq('reference_code', reference).maybeSingle()

@@ -75,7 +75,7 @@ export default function Navbar() {
             color: 'var(--text-soft)',
             whiteSpace: 'nowrap',
           }}>
-            Flights · stays · appointments
+            Flights · stays · services
           </span>
         </span>
       </Link>
